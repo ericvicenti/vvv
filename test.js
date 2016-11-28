@@ -48,11 +48,13 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
   console.log();
   var config = fs.readFileSync(sshConfigPath, 'utf-8');
   config = config + '\n\n' +
-  'Host gh-pages\n'+
+  'Host github.com-pages\n'+
   '  HostName github.com\n'+
+  '  User git\n'+
   '  IdentityFile '+keyPath+'\n';
   fs.writeFileSync(sshConfigPath, config);
-  
+  console.log('wrote', config);
+
   fs.mkdirSync(repoPath);
   var initOut = exec('git', [
     'init',
@@ -64,7 +66,7 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
     'add',
     '-t', // only use for this branch
     'gh-pages',
-    'git@gh-pages:'+ghOrg+'/'+ghRepo+'.git'
+    'github.com-pages:'+ghOrg+'/'+ghRepo+'.git'
   ], {cwd: repoPath});
   console.log('remote', remoteOut.stdout, remoteOut.stderr);
 
