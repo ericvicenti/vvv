@@ -17,7 +17,7 @@ var ghOrg = process.env.CIRCLE_PROJECT_USERNAME;
 var ghRepo = process.env.CIRCLE_PROJECT_REPONAME;
 var ghLink = 'https://github.com/'+ghOrg+'/'+ghRepo+'/settings/keys';
 var circleLink = 'https://circleci.com/gh/'+ghOrg+'/'+ghRepo+'/edit#env-vars';
-
+var repoPath = join(home, 'ghpages');
 if (!process.env.GH_DEPLOYMENT_KEY) {
   keygen({
     comment: 'ci-deploy-key',
@@ -45,14 +45,33 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
 } else {
   fs.writeFileSync(keyPath, new Buffer(process.env.GH_DEPLOYMENT_KEY, 'hex'));
   console.log(fs.existsSync(sshConfigPath));
-  console.log(fs.readFileSync(sshConfigPath, 'utf-8'));
-  var cloneOut = exec('git', [
-    'clone',
-    '-b',
+  console.log();
+  var config = fs.readFileSync(sshConfigPath, 'utf-8');
+  config = config + '\n\n' +
+  'Host gh-pages\n'+
+  '  HostName github.com\n'+
+  '  IdentityFile '+keyPath+'\n';
+  fs.writeFileSync(sshConfigPath, config);
+  
+  fs.mkdirSync(repoPath);
+  var initOut = exec('git', [
+    'init',
+  ], {cwd: repoPath});
+  console.log('init', initOut.stdout, initOut.stderr);
+
+  var remoteOut = exec('git', [
+    'remote',
+    'add',
+    '-t', // only use for this branch
     'gh-pages',
-    '-i ',
-    keyPath,
-    'git@github.com:'+ghOrg+'/'+ghRepo+'.git'
-  ]);
-  console.log(cloneOut.stdout, cloneOut.stderr);
+    'git@gh-pages:'+ghOrg+'/'+ghRepo+'.git'
+  ], {cwd: repoPath});
+  console.log('remote', remoteOut.stdout, remoteOut.stderr);
+
+  var checkoutOut = exec('git', [
+    'checkout',
+    'gh-pages',
+  ], {cwd: repoPath});
+  console.log('checkout', checkoutOut.stdout, checkoutOut.stderr);
+
 }
