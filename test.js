@@ -1,4 +1,3 @@
-console.log('YES, RUNNING FROM VVV!', JSON.stringify(process.env))
 
 var keygen = require('ssh-keygen');
 
@@ -7,7 +6,7 @@ var generalMessage = ''+
 'You need to set up your github deployment key!' +
 '';
 
-var ghOrg = process.env.CIRCLE_PROJECT_ORGNAME;
+var ghOrg = process.env.CIRCLE_PROJECT_USERNAME;
 var ghRepo = process.env.CIRCLE_PROJECT_REPONAME;
 var ghLink = 'https://github.com/'+ghOrg+'/'+ghRepo+'/settings/keys';
 var circleLink = 'https://circleci.com/gh/'+ghOrg+'/'+ghRepo+'/edit';
@@ -33,6 +32,6 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
 
     process.exit(0);
   });
+} else {
+  console.log('rock and roll!', process.env.GH_DEPLOYMENT_KEY);
 }
-
-console.log('rock and roll!', process.env.GH_DEPLOYMENT_KEY);
