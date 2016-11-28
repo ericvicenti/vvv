@@ -66,6 +66,7 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
     'add',
     '-t', // only use for this branch
     'gh-pages',
+    'gh-pages',
     'github.com-pages:'+ghOrg+'/'+ghRepo+'.git'
   ], {cwd: repoPath});
   console.log('remote', remoteOut.stdout, remoteOut.stderr);
