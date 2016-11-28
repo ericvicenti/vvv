@@ -12,6 +12,7 @@ var generalMessage = ''+
 var home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 var sshConfigPath = join(home, '.ssh/config');
 var keyPath = join(home, 'access.key');
+var buildPath = join(home, 'build');
 
 var ghOrg = process.env.CIRCLE_PROJECT_USERNAME;
 var ghRepo = process.env.CIRCLE_PROJECT_REPONAME;
@@ -55,6 +56,10 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
   fs.writeFileSync(sshConfigPath, config);
   console.log('wrote', config);
 
+
+  fs.mkdirSync(buildPath);
+  fs.writeFileSync(join(buildPath, 'index.html'), 'Hello, gh pages!');
+
   fs.mkdirSync(repoPath);
   var initOut = exec('git', [
     'init',
@@ -64,11 +69,22 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
   var remoteOut = exec('git', [
     'remote',
     'add',
-    '-t', // only use for this branch
+    '-t',
     'gh-pages',
-    'gh-pages',
+    'origin',
     'github.com-pages:'+ghOrg+'/'+ghRepo+'.git'
   ], {cwd: repoPath});
+  if (remoteOut.stderr.indexOf("pathspec 'gh-pages' did not match any file(s) known to git.") !== -1) {
+    console.log('error');
+    const remoteOut2 = exec('git', [
+      'remote',
+      'add',
+      ''
+    ], {cwd: repoPath});
+    console.log('remoteOut2', remoteOut2.stdout, remoteOut2.stderr);
+  } else {
+    console.log('great news!')
+  }
   console.log('remote', remoteOut.stdout, remoteOut.stderr);
 
   var checkoutOut = exec('git', [
