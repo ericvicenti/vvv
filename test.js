@@ -75,7 +75,7 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
     'github.com-pages:'+ghOrg+'/'+ghRepo+'.git'
   ], {cwd: repoPath});
   if (remoteOut.stderr.indexOf("pathspec 'gh-pages' did not match any file(s) known to git.") !== -1) {
-    console.log('error');
+    console.log('Remote branch does not already exist!');
     const remoteOut2 = exec('git', [
       'remote',
       'add',
@@ -83,7 +83,7 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
     ], {cwd: repoPath});
     console.log('remoteOut2', remoteOut2.stdout, remoteOut2.stderr);
   } else {
-    console.log('great news!')
+    console.log('great news!', remoteOut.code === 0);
   }
   console.log('remote', remoteOut.stdout, remoteOut.stderr);
 
