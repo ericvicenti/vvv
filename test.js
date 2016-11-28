@@ -9,6 +9,10 @@ var generalMessage = ''+
 'You need to set up your github deployment key!' +
 '';
 
+var home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+var sshConfigPath = join(home, '.ssh/config');
+var keyPath = join(home, 'access.key');
+
 var ghOrg = process.env.CIRCLE_PROJECT_USERNAME;
 var ghRepo = process.env.CIRCLE_PROJECT_REPONAME;
 var ghLink = 'https://github.com/'+ghOrg+'/'+ghRepo+'/settings/keys';
@@ -40,8 +44,9 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
   });
 } else {
   console.log('rock and roll!', process.env.GH_DEPLOYMENT_KEY);
-  var keyPath = join(__dirname, 'access.key');
   fs.writeFileSync(keyPath, new Buffer(process.env.GH_DEPLOYMENT_KEY, 'hex'));
+  console.log(fs.existsSync(sshConfigPath));
+  console.log(fs.readFileSync(join(home, '.ssh/config'));
   var cloneOut = exec('git', [
     'clone',
     '-b',
