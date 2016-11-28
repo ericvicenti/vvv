@@ -18,19 +18,22 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
     if(err) {
       console.log(generalMessage);
       console.log('The key could not be automatically created: '+err);
-      process.exit(0);
+      process.exit(1);
       return;
     }
     var priv = (new Buffer(out.key)).toString('hex');
     console.log(generalMessage);
+    console.log('');
     console.log('1. Go to '+ghLink)
+    console.log('');
     console.log('Add this public key: ')
     console.log(out.pubKey);
     console.log('2. Go to '+circleLink);
+    console.log('');
     console.log('Add an env variable called "GH_DEPLOYMENT_KEY": ');
     console.log(priv);
 
-    process.exit(0);
+    process.exit(1);
   });
 } else {
   console.log('rock and roll!', process.env.GH_DEPLOYMENT_KEY);
