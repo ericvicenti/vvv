@@ -1,7 +1,7 @@
 
 var keygen = require('ssh-keygen');
 var fs = require('fs-extra');
-var exec = require('child_process').execFileSync();
+var exec = require('child_process').execFileSync;
 var join = require('path').join;
 
 
