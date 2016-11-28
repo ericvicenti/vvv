@@ -41,6 +41,14 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
 } else {
   console.log('rock and roll!', process.env.GH_DEPLOYMENT_KEY);
   var keyPath = join(__dirname, 'access.key');
-  // fs.writeFileSync(keyPath, new Buffer(process.env.GH_DEPLOYMENT_KEY, 'hex'));
-  console.log('git clone', keyPath);
+  fs.writeFileSync(keyPath, new Buffer(process.env.GH_DEPLOYMENT_KEY, 'hex'));
+  var cloneOut = exec('git', [
+    'clone',
+    '-b',
+    'gh-pages',
+    '-i ',
+    keyPath,
+    'git@github.com:'+ghOrg+'/'+ghRepo+'.git'
+  ]);
+  console.log(cloneOut.stdout, cloneOut.stderr);
 }
