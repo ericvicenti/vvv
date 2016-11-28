@@ -46,7 +46,7 @@ if (!process.env.GH_DEPLOYMENT_KEY) {
   console.log('rock and roll!', process.env.GH_DEPLOYMENT_KEY);
   fs.writeFileSync(keyPath, new Buffer(process.env.GH_DEPLOYMENT_KEY, 'hex'));
   console.log(fs.existsSync(sshConfigPath));
-  console.log(fs.readFileSync(join(home, '.ssh/config'));
+  console.log(fs.readFileSync(join(home, '.ssh/config')));
   var cloneOut = exec('git', [
     'clone',
     '-b',
